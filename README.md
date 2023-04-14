@@ -60,7 +60,15 @@ The authentication process will be validated, ensuring the security of the users
 and answers must be validated by the platform to ensure quality.;\
 :heavy_check_mark:Questions and Answers: The website will focus only on questions and answers, with no chatting feature available.\
 :heavy_check_mark:Request Form: Users can submit questions related to their coding errors via a request form.\
-This feature will ensure that the question is well-formulated, allowing users to get accurate answers.
+:heavy_check_mark: Search Functionality: A search bar can be added to the website,allowing users to search for questions and answers using keywords. \
+:heavy_check_mark: Tagging System: When submitting a question, users can add tags to their question. Tags can be predefined or user-generated.\
+:heavy_check_mark:Upvote/Downvote System: Users can upvote or downvote questions and answers, and the most helpful answers will rise to the top. \
+:heavy_check_mark: Reputation System: Users can earn reputation points by providing helpful answers. \
+:heavy_check_mark: Moderation System: Moderators can review and approve questions before they are posted.\
+:heavy_check_mark: Integration with External Resources: The website can integrate with external resources such as Stack Overflow and GitHub,
+allowing users to find additional resources to solve their coding problems.\
+:heavy_check_mark: Discussion Forum: Users can create and participate in discussions related to their programming languages. \
+:heavy_check_mark: Chat room: A sidebar where users can chat with each other real-time.
 
 ## :rocket: Technologies
 
