@@ -46,22 +46,31 @@
 
 ## :dart: About
 
-Describe your project
+The website for error solving aims to provide a platform for developers to seek solutions to their coding problems.
+It will allow users to select a programming language and submit questions related to their coding errors.
+Other users can view and answer the questions, and the platform will provide a separate page for
+answered and unanswered questions.
 
 ## :sparkles: Features
 
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
+:heavy_check_mark:Language Selection: Users can select the programming language they are using and view relevant questions.\
+:heavy_check_mark: Authentication: Users will be required to register and login to access the website's features.
+The authentication process will be validated, ensuring the security of the users' accounts.\
+:heavy_check_mark: Question Validation: Users can submit questions related to their coding errors,
+and answers must be validated by the platform to ensure quality.;
+:heavy_check_mark:Questions and Answers: The website will focus only on questions and answers, with no chatting feature available.
+:heavy_check_mark:Request Form: Users can submit questions related to their coding errors via a request form.
+This feature will ensure that the question is well-formulated, allowing users to get accurate answers.
 
 ## :rocket: Technologies
 
 The following tools were used in this project:
 
-- [Expo](https://expo.io/)
 - [Node.js](https://nodejs.org/en/)
 - [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
+- [Express](https://expressjs.com)
+- [MongoDB](https://www.mongodb.com)
+- [PassportJS](https://www.mongodb.com)
 - [TypeScript](https://www.typescriptlang.org/)
 
 ## :white_check_mark: Requirements
@@ -90,7 +99,7 @@ $ yarn start
 
 This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
 
-Made with :heart: by <a href="https://github.com/{{YOUR_GITHUB_USERNAME}}" target="_blank">{{YOUR_NAME}}</a>
+Made with :heart: by <a href="https://github.com/{{YOUR_GITHUB_USERNAME}}" target="_blank">MantasPetrosiusI</a>
 
 &#xa0;
 
