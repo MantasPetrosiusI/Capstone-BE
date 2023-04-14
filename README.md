@@ -80,6 +80,10 @@ The following tools were used in this project:
 - [MongoDB](https://www.mongodb.com)
 - [PassportJS](https://www.mongodb.com)
 - [TypeScript](https://www.typescriptlang.org/)
+- [VoteJS](github.com/yusufshakeel/votejs)
+- [ReputationJS](https://github.com/mozilla-services/ip-reputation-js-client)
+- [Casl](https://casl.js.org/v6/en/)
+- [Discourse](https://www.discourse.org)?
 
 ## :white_check_mark: Requirements
 
