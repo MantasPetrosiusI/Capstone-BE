@@ -60,7 +60,7 @@ The authentication process will be validated, ensuring the security of the users
 and answers must be validated by the platform to ensure quality.;\
 :heavy_check_mark:Questions and Answers: The website will focus only on questions and answers, with no chatting feature available.\
 :heavy_check_mark:Request Form: Users can submit questions related to their coding errors via a request form.\
-This feature will ensure that the question is well-formulated, allowing users to get accurate answers.\
+This feature will ensure that the question is well-formulated, allowing users to get accurate answers.
 
 ## :rocket: Technologies
 
