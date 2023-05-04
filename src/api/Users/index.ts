@@ -2,10 +2,24 @@ import express, { Request } from "express";
 import UserModel from "./model";
 import { TokenPayload, createAccessToken } from "../lib/auth/tools";
 import { JWTAuthMiddleware } from "../lib/auth/jwt";
+import createHttpError from "http-errors";
+import multer from "multer";
+import { v2 as cloudinary, UploadApiOptions } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 interface TokenRequest extends Request {
   user?: TokenPayload;
 }
+
+const cloudinaryUploader = multer({
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: (req: Request, file: Express.Multer.File): UploadApiOptions => ({
+      folder: "Capstone/users/avatars",
+      public_id: (req as TokenRequest).user?.username,
+    }),
+  }),
+}).single("avatar");
 
 const userRouter = express.Router();
 //LOGIN -- REGISTER -- LOGOUT //
@@ -44,5 +58,35 @@ userRouter.post("/login", async (req, res, next) => {
 });
 
 // END OF LOGIN-REGISTER-LOGOUT //
-
+userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+  try {
+    const user = await UserModel.findById((req as TokenRequest).user!._id);
+    if (user) {
+      res.send(user);
+    } else {
+      res.send(createHttpError(404, "User not found!"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+userRouter.post(
+  "/avatar",
+  JWTAuthMiddleware,
+  cloudinaryUploader,
+  async (req, res, next) => {
+    try {
+      const user = await UserModel.findById((req as TokenRequest).user!._id);
+      if (user) {
+        user.avatar = req.file?.path;
+        await user.save();
+        res.status(201).send(user);
+      } else {
+        next(createHttpError(404, "User with this id does not exist!"));
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 export default userRouter;

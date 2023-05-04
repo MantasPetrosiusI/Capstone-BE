@@ -21,6 +21,7 @@ export const JWTAuthMiddleware: RequestHandler = async (req, res, next) => {
       req.user = {
         _id: payload._id,
         username: payload.username,
+        email: payload.email,
         avatar: payload.avatar,
         reputation: payload.reputation,
         role: payload.role,

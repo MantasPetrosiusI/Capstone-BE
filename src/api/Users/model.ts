@@ -26,7 +26,7 @@ const UserSchema = new Schema(
     password: { type: String, required: true },
     avatar: {
       type: String,
-      default: `https://www.maxpixel.net/static/photo/1x/Profile-Man-Symbol-Human-Communication-User-Home-42914.png `,
+      default: `https://res.cloudinary.com/dlfkpg7my/image/upload/v1683029682/Capstone/Sample_User_Icon_js0pbj.png`,
     },
     reputation: { type: Number, default: 0 },
     role: {
