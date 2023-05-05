@@ -1,7 +1,7 @@
 import express, { Request } from "express";
 import UserModel from "./model";
-import { TokenPayload, createAccessToken } from "../lib/auth/tools";
-import { JWTAuthMiddleware } from "../lib/auth/jwt";
+import { TokenPayload, createAccessToken } from "../../lib/auth/tools";
+import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import createHttpError from "http-errors";
 import multer from "multer";
 import { v2 as cloudinary, UploadApiOptions } from "cloudinary";

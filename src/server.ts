@@ -10,6 +10,7 @@ import {
 } from "./errorHandlers";
 import passport from "passport";
 import userRouter from "./api/Users";
+import questionRouter from "./api/Questions";
 
 const server = Express();
 
@@ -18,6 +19,7 @@ server.use(Express.json());
 server.use(passport.initialize());
 
 server.use("/users", userRouter);
+server.use("/users", questionRouter);
 
 server.use(badRequestHandler);
 server.use(unauthorizedHandler);
