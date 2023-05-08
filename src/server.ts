@@ -11,6 +11,7 @@ import {
 import passport from "passport";
 import userRouter from "./api/Users";
 import questionRouter from "./api/Questions";
+import answersRouter from "./api/Answers";
 
 const server = Express();
 
@@ -20,6 +21,7 @@ server.use(passport.initialize());
 
 server.use("/users", userRouter);
 server.use("/users", questionRouter);
+server.use("/users", answersRouter);
 
 server.use(badRequestHandler);
 server.use(unauthorizedHandler);

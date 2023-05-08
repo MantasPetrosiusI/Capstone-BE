@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Types } from "mongoose";
 
 export interface QuestionDocument extends Document {
   title: string;
@@ -6,6 +6,9 @@ export interface QuestionDocument extends Document {
   language: string;
   tags: string[];
   user: string;
+  answered: boolean;
+  noOfLikes: number;
+  answers: Types.Array<Types.ObjectId>;
 }
 
 const QuestionSchema = new Schema(
@@ -15,6 +18,9 @@ const QuestionSchema = new Schema(
     language: { type: String, required: true },
     tags: [{ type: String }],
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    answered: { type: Boolean, default: false },
+    noOfLikes: { type: Number, default: 0 },
+    answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
   },
   { timestamps: true }
 );
