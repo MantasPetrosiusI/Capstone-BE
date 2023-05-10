@@ -70,7 +70,7 @@ userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
-userRouter.get("/:id", JWTAuthMiddleware, async (req, res, next) => {
+userRouter.get("/:id", async (req, res, next) => {
   try {
     const user = await UserModel.findById(req.params.id);
     if (user) {
