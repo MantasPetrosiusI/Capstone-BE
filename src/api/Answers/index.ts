@@ -38,7 +38,7 @@ answersRouter.post(
   }
 );
 
-answersRouter.get("/questions/:questionId/answers", async (req, res, next) => {
+answersRouter.get("/questions/:questionId", async (req, res, next) => {
   try {
     console.log(req.params.questionId);
     const answers = await AnswerModel.find({
