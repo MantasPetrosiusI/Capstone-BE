@@ -43,7 +43,7 @@ answersRouter.get("/questions/:questionId", async (req, res, next) => {
     console.log(req.params.questionId);
     const answers = await AnswerModel.find({
       question: req.params.questionId,
-    });
+    }).populate("user", "body");
     console.log(answers);
 
     res.send(answers);
