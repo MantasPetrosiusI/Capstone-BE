@@ -5,7 +5,7 @@ export interface QuestionDocument extends Document {
   description: string;
   language: string;
   tags: string[];
-  user: string;
+  user: Types.ObjectId;
   answered: boolean;
   noOfLikes: number;
   answers: Types.Array<Types.ObjectId>;

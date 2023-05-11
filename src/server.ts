@@ -19,8 +19,8 @@ server.use(cors());
 server.use(Express.json());
 server.use(passport.initialize());
 
-server.use("/users", userRouter);
 server.use("/users", questionRouter);
+server.use("/users", userRouter);
 server.use("/users", answersRouter);
 
 server.use(badRequestHandler);

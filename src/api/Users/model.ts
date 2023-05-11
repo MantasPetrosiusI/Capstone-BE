@@ -1,8 +1,9 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 import { Model, Document } from "mongoose";
 
 export interface UserDocument extends Document {
+  _id: string;
   username: string;
   email: string;
   password: string;

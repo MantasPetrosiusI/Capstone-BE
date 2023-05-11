@@ -1,8 +1,7 @@
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";
 
 export interface TokenPayload {
-  _id: mongoose.Types.ObjectId;
+  _id: string;
   username: string;
   email: string;
   avatar?: string;

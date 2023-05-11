@@ -22,7 +22,7 @@ const cloudinaryUploader = multer({
 }).single("avatar");
 
 const userRouter = express.Router();
-//LOGIN -- REGISTER -- LOGOUT //
+//LOGIN -- REGISTER //
 userRouter.post("/register", async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -47,7 +47,7 @@ userRouter.post("/login", async (req, res, next) => {
   }
 
   const token = await createAccessToken({
-    _id: user._id.toString(),
+    _id: user._id,
     username: user.username,
     email: user.email,
     avatar: user.avatar,
@@ -57,7 +57,7 @@ userRouter.post("/login", async (req, res, next) => {
   res.send({ token });
 });
 
-// END OF LOGIN-REGISTER-LOGOUT //
+// END OF LOGIN-REGISTER //
 userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const user = await UserModel.findById((req as TokenRequest).user!._id);

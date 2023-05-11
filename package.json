@@ -2,10 +2,9 @@
   "name": "capstone-be",
   "version": "1.0.0",
   "description": "<div align=\"center\" id=\"top\">    <img src=\"./.github/app.gif\" alt=\"Capstone BE\" />",
-  "main": "index.ts",
   "scripts": {
-    "start": "node src/server.ts",
-    "dev": "nodemon -r dotenv/config ./src/index.ts",
+    "start": "node src/index.ts",
+    "dev": "nodemon -r --exec ts-node dotenv/config ./src/index",
     "build": "tsc"
   },
   "keywords": [],
