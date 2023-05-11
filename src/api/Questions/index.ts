@@ -1,8 +1,6 @@
 import express, { Request } from "express";
-import UserModel from "./model";
 import { TokenPayload } from "../../lib/auth/tools";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
-import createHttpError from "http-errors";
 import QuestionModel from "./model";
 
 interface TokenRequest extends Request {
@@ -34,7 +32,7 @@ questionRouter.post(
     }
   }
 );
-questionRouter.get("/questions", async (req, res, next) => {
+questionRouter.get("/", async (req, res, next) => {
   try {
     const allQuestions = await QuestionModel.find();
     res.send(allQuestions);
@@ -42,19 +40,15 @@ questionRouter.get("/questions", async (req, res, next) => {
     next(error);
   }
 });
-questionRouter.get(
-  "/me/questions",
-  JWTAuthMiddleware,
-  async (req, res, next) => {
-    const userId = (req as TokenRequest).user!._id;
+questionRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+  const userId = (req as TokenRequest).user!._id;
 
-    try {
-      const userQuestions = await QuestionModel.find({ user: userId });
-      res.send(userQuestions);
-    } catch (error) {
-      next(error);
-    }
+  try {
+    const userQuestions = await QuestionModel.find({ user: userId });
+    res.send(userQuestions);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 export default questionRouter;
