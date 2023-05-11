@@ -12,3 +12,5 @@ mongoose.connection.on("connected", () => {
     console.log(`Server listening on port ${port}`);
   });
 });
+
+export default {};
