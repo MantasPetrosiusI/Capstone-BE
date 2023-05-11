@@ -31,4 +31,4 @@ server.use(notFoundHandler);
 server.use(validationErrorHandler);
 server.use(genericErrorHandler);
 
-export { server };
+export default server;
