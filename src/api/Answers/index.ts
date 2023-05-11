@@ -17,9 +17,7 @@ answersRouter.post(
     const { body } = req.body;
     const userId = (req as TokenRequest).user!._id;
     const questionId = req.params.questionId;
-
     try {
-      // Create new answer
       const newAnswer = new AnswerModel({
         user: userId,
         question: questionId,
@@ -37,13 +35,30 @@ answersRouter.post(
     }
   }
 );
+answersRouter.get(
+  "/questions/:questionId/:answerId",
+  async (req, res, next) => {
+    try {
+      console.log(req.params.questionId);
+      console.log(req.params.answerId);
+      const answer = await AnswerModel.findOne({
+        question: req.params.questionId,
+        _id: req.params.answerId,
+      }).populate("user");
+      console.log(answer);
 
+      res.send(answer);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 answersRouter.get("/questions/:questionId", async (req, res, next) => {
   try {
     console.log(req.params.questionId);
     const answers = await AnswerModel.find({
       question: req.params.questionId,
-    }).populate("user", "body");
+    });
     console.log(answers);
 
     res.send(answers);
