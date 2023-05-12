@@ -31,7 +31,6 @@ userRouter.post("/register", async (req, res, next) => {
       return res.status(402).json("Username already exists");
     }
     const user = new UserModel({ username, email, password });
-    console.log(user);
     await user.save();
     res.json({ user });
   } catch (error) {

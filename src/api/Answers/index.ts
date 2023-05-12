@@ -39,15 +39,15 @@ answersRouter.get(
   "/questions/:questionId/:answerId",
   async (req, res, next) => {
     try {
-      console.log(req.params.questionId);
-      console.log(req.params.answerId);
       const answer = await AnswerModel.findOne({
         question: req.params.questionId,
         _id: req.params.answerId,
       }).populate("user");
-      console.log(answer);
-
-      res.send(answer);
+      if (answer === null) {
+        res.status(404).send(null);
+      } else {
+        res.send(answer);
+      }
     } catch (error) {
       next(error);
     }
@@ -55,12 +55,9 @@ answersRouter.get(
 );
 answersRouter.get("/questions/:questionId", async (req, res, next) => {
   try {
-    console.log(req.params.questionId);
     const answers = await AnswerModel.find({
       question: req.params.questionId,
     });
-    console.log(answers);
-
     res.send(answers);
   } catch (error) {
     next(error);
