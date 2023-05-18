@@ -3,33 +3,38 @@ import { RequestHandler, Request } from "express";
 import { verifyAccessToken, TokenPayload } from "./tools";
 
 export interface UserRequest extends Request {
-  user: TokenPayload;
+  user?: TokenPayload; // Make the user property optional
 }
 
 export const JWTAuthMiddleware: RequestHandler = async (req, res, next) => {
-  if (!req.headers.authorization) {
-    next(
-      createHttpError(
+  try {
+    if (!req.headers.authorization) {
+      throw createHttpError(
         401,
-        "Please provide Bearer token in authorization header"
-      )
-    );
-  } else {
+        "Please provide a Bearer token in the authorization header"
+      );
+    }
+
     const accessToken = req.headers.authorization.replace("Bearer ", "");
-    try {
-      const payload = await verifyAccessToken(accessToken);
-      req.user = {
-        _id: payload._id,
-        username: payload.username,
-        email: payload.email,
-        avatar: payload.avatar,
-        reputation: payload.reputation,
-        role: payload.role,
-      };
-      next();
-    } catch (error) {
-      console.log(error);
-      next(createHttpError(401, "Token not valid! Please log in again!"));
+    const payload = await verifyAccessToken(accessToken);
+
+    req.user = {
+      _id: payload._id,
+      username: payload.username,
+      email: payload.email,
+      avatar: payload.avatar,
+      reputation: payload.reputation,
+      role: payload.role,
+    };
+
+    next();
+  } catch (error: any) {
+    console.error(error);
+
+    if (error.name === "JsonWebTokenError") {
+      next(createHttpError(401, "Invalid token. Please log in again."));
+    } else {
+      next(createHttpError(500, "Internal server error"));
     }
   }
 };

@@ -39,12 +39,13 @@ answersRouter.get(
   "/questions/:questionId/:answerId",
   async (req, res, next) => {
     try {
+      console.log(req.params);
       const answer = await AnswerModel.findOne({
         question: req.params.questionId,
         _id: req.params.answerId,
       }).populate("user");
-      if (answer === null) {
-        res.status(404).send(null);
+      if (answer === undefined) {
+        res.status(404).send(undefined);
       } else {
         res.send(answer);
       }
@@ -58,6 +59,18 @@ answersRouter.get("/questions/:questionId", async (req, res, next) => {
     const answers = await AnswerModel.find({
       question: req.params.questionId,
     });
+    res.send(answers);
+  } catch (error) {
+    next(error);
+  }
+});
+
+answersRouter.get("/:userId/answers", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    const answers = await AnswerModel.find({ user: userId }).populate(
+      "question"
+    );
     res.send(answers);
   } catch (error) {
     next(error);

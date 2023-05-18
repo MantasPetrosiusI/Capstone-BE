@@ -1,6 +1,10 @@
 import express, { Request } from "express";
 import UserModel from "./model";
-import { TokenPayload, createAccessToken } from "../../lib/auth/tools";
+import {
+  TokenPayload,
+  createAccessToken,
+  verifyAccessToken,
+} from "../../lib/auth/tools";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import createHttpError from "http-errors";
 import multer from "multer";
@@ -45,6 +49,8 @@ userRouter.post("/login", async (req, res, next) => {
     return next({ status: 500, message: "Username or password is incorrect" });
   }
 
+  user.online = true;
+  await user.save();
   const token = await createAccessToken({
     _id: user._id,
     username: user.username,
@@ -56,7 +62,29 @@ userRouter.post("/login", async (req, res, next) => {
   res.send({ token });
 });
 
+userRouter.post("/logout", async (req, res, next) => {
+  try {
+    const { userId } = req.body;
+    await UserModel.findByIdAndUpdate(userId, { online: false });
+    res.status(200).json({ message: "User logged out successfully." });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // END OF LOGIN-REGISTER //
+userRouter.get("/", async (req, res, next) => {
+  try {
+    const users = await UserModel.find();
+    if (users) {
+      res.send(users);
+    } else {
+      res.send(createHttpError(404, "No users"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 userRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const user = await UserModel.findById((req as TokenRequest).user!._id);

@@ -34,7 +34,7 @@ questionRouter.post(
 );
 questionRouter.get("/", async (req, res, next) => {
   try {
-    const allQuestions = await QuestionModel.find();
+    const allQuestions = await QuestionModel.find().populate("user");
     res.send(allQuestions);
   } catch (error) {
     next(error);
@@ -46,6 +46,27 @@ questionRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const userQuestions = await QuestionModel.find({ user: userId });
     res.send(userQuestions);
+  } catch (error) {
+    next(error);
+  }
+});
+
+questionRouter.get("/search", async (req, res, next) => {
+  const { language, tag, title } = req.query;
+
+  try {
+    let searchQuery: any = {};
+
+    if (language) {
+      searchQuery.language = language;
+    } else if (tag) {
+      searchQuery.tags = tag;
+    } else if (title) {
+      searchQuery.title = { $regex: title, $options: "i" };
+    }
+
+    const searchResults = await QuestionModel.find(searchQuery);
+    res.send(searchResults);
   } catch (error) {
     next(error);
   }

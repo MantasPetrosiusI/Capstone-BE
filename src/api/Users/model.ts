@@ -11,6 +11,7 @@ export interface UserDocument extends Document {
   reputation: number;
   role: "User" | "Moderator" | "Administrator";
   accessToken?: string;
+  online: boolean;
 }
 
 interface UserModelInterface extends Model<UserDocument> {
@@ -36,6 +37,7 @@ const UserSchema = new Schema(
       default: "User",
     },
     accessToken: { type: String },
+    online: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
