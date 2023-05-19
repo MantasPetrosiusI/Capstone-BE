@@ -3,6 +3,7 @@ import { TokenPayload } from "../../lib/auth/tools";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import AnswerModel from "./model";
 import QuestionModel from "../Questions/model";
+import { SchemaTypeOptions, Types } from "mongoose";
 
 interface TokenRequest extends Request {
   user?: TokenPayload;
@@ -76,5 +77,33 @@ answersRouter.get("/:userId/answers", async (req, res, next) => {
     next(error);
   }
 });
+
+answersRouter.post(
+  "/:answerId/like",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    const answerId = req.params.answerId;
+    const userId = (req as TokenRequest).user!._id;
+    try {
+      const answerObjectId = new Types.ObjectId(answerId);
+      const answer = await AnswerModel.findById(answerObjectId);
+      if (answer!.likedBy.includes(new Types.ObjectId(userId))) {
+        answer!.likedBy = answer!.likedBy.filter(
+          (likedUserId) => likedUserId.toString() !== userId.toString()
+        );
+        answer!.noOfLikes -= 1;
+        await answer!.save();
+        return res.status(400).send({ answerId });
+      }
+      answer!.likedBy.push(new Types.ObjectId(userId));
+      answer!.noOfLikes += 1;
+
+      await answer!.save();
+      res.send({ answerId });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default answersRouter;

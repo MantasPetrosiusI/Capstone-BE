@@ -2,6 +2,8 @@ import express, { Request } from "express";
 import { TokenPayload } from "../../lib/auth/tools";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import QuestionModel from "./model";
+import UserModel from "../Users/model";
+import { Types } from "mongoose";
 
 interface TokenRequest extends Request {
   user?: TokenPayload;
@@ -25,7 +27,9 @@ questionRouter.post(
         user: userId,
       });
       await newQuestion.save();
-
+      await UserModel.findByIdAndUpdate(userId, {
+        $push: { questions: newQuestion._id },
+      });
       res.status(201).send(newQuestion);
     } catch (error) {
       next(error);
@@ -50,9 +54,35 @@ questionRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
+questionRouter.post(
+  "/:questionId/like",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    const questionId = req.params.questionId;
+    const userId = (req as TokenRequest).user!._id;
+    try {
+      const questionObjectId = new Types.ObjectId(questionId);
+      const question = await QuestionModel.findById(questionObjectId);
+      if (question!.likedBy.includes(new Types.ObjectId(userId))) {
+        question!.likedBy = question!.likedBy.filter(
+          (likedUserId) => likedUserId.toString() !== userId.toString()
+        );
+        question!.noOfLikes -= 1;
+        await question!.save();
+        return res.status(400).send({ questionId });
+      }
+      question!.likedBy.push(new Types.ObjectId(userId));
+      question!.noOfLikes += 1;
 
+      await question!.save();
+      res.send({ questionId });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 questionRouter.get("/search", async (req, res, next) => {
-  const { language, tag, title } = req.query;
+  const { language, tag, title, username } = req.query;
 
   try {
     let searchQuery: any = {};
@@ -63,9 +93,16 @@ questionRouter.get("/search", async (req, res, next) => {
       searchQuery.tags = tag;
     } else if (title) {
       searchQuery.title = { $regex: title, $options: "i" };
+    } else if (username) {
+      searchQuery.user = username;
     }
-
-    const searchResults = await QuestionModel.find(searchQuery);
+    let searchResults = {};
+    if (language || title || tag) {
+      searchResults = await QuestionModel.find(searchQuery);
+    } else if (username) {
+      console.log(username);
+      searchResults = await UserModel.find({ username: username });
+    }
     res.send(searchResults);
   } catch (error) {
     next(error);

@@ -8,6 +8,7 @@ export interface QuestionDocument extends Document {
   user: Types.ObjectId;
   answered: boolean;
   noOfLikes: number;
+  likedBy: Types.ObjectId[];
   answers: Types.Array<Types.ObjectId>;
 }
 
@@ -20,6 +21,7 @@ const QuestionSchema = new Schema(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     answered: { type: Boolean, default: false },
     noOfLikes: { type: Number, default: 0 },
+    likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
   },
   { timestamps: true }
