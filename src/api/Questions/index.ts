@@ -37,9 +37,17 @@ questionRouter.post(
   }
 );
 questionRouter.get("/", async (req, res, next) => {
+  const { pending } = req.query;
+
   try {
-    const allQuestions = await QuestionModel.find().populate("user");
-    res.send(allQuestions);
+    let query = {};
+
+    if (pending === "true") {
+      query = { pending: true };
+    }
+
+    const questions = await QuestionModel.find(query).populate("user");
+    res.send(questions);
   } catch (error) {
     next(error);
   }
@@ -108,5 +116,30 @@ questionRouter.get("/search", async (req, res, next) => {
     next(error);
   }
 });
+
+questionRouter.post(
+  "/:questionId/status",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    const questionId = req.params.questionId;
+    const { status } = req.body;
+
+    try {
+      const question = await QuestionModel.findByIdAndUpdate(
+        questionId,
+        { accepted: status, pending: false },
+        { new: true }
+      ).populate("user");
+
+      if (!question) {
+        return res.status(404).send({ message: "Question not found" });
+      }
+
+      res.send(question);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 export default questionRouter;

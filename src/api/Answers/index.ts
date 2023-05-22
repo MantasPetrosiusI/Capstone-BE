@@ -3,7 +3,7 @@ import { TokenPayload } from "../../lib/auth/tools";
 import { JWTAuthMiddleware } from "../../lib/auth/jwt";
 import AnswerModel from "./model";
 import QuestionModel from "../Questions/model";
-import { SchemaTypeOptions, Types } from "mongoose";
+import { Types } from "mongoose";
 
 interface TokenRequest extends Request {
   user?: TokenPayload;
@@ -36,6 +36,24 @@ answersRouter.post(
     }
   }
 );
+answersRouter.get("/", async (req, res, next) => {
+  const { pending } = req.query;
+
+  try {
+    let query = {};
+
+    if (pending === "true") {
+      query = { pending: true };
+    }
+
+    const answers = await AnswerModel.find(query)
+      .populate("user")
+      .populate("question");
+    res.send(answers);
+  } catch (error) {
+    next(error);
+  }
+});
 answersRouter.get(
   "/questions/:questionId/:answerId",
   async (req, res, next) => {
@@ -55,11 +73,12 @@ answersRouter.get(
     }
   }
 );
-answersRouter.get("/questions/:questionId", async (req, res, next) => {
+answersRouter.get("/:questionId", async (req, res, next) => {
   try {
     const answers = await AnswerModel.find({
       question: req.params.questionId,
-    });
+    }).populate("user");
+    console.log("getAnswerById: ", answers);
     res.send(answers);
   } catch (error) {
     next(error);
@@ -100,6 +119,39 @@ answersRouter.post(
 
       await answer!.save();
       res.send({ answerId });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+answersRouter.post(
+  "/:answerId/status",
+  JWTAuthMiddleware,
+  async (req, res, next) => {
+    const answerId: string = req.params.answerId;
+    const { status } = req.body;
+
+    try {
+      const answer = await AnswerModel.findByIdAndUpdate(
+        answerId,
+        { accepted: status, pending: false },
+        { new: true }
+      );
+
+      const questionId = answer!.question!;
+
+      if (!answer) {
+        return res.status(404).send({ message: "Answer not found" });
+      }
+
+      const question = await QuestionModel.findByIdAndUpdate(
+        questionId,
+        { answered: true },
+        { new: true }
+      );
+
+      res.send(answer);
     } catch (error) {
       next(error);
     }

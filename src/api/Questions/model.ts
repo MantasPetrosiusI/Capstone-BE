@@ -10,6 +10,8 @@ export interface QuestionDocument extends Document {
   noOfLikes: number;
   likedBy: Types.ObjectId[];
   answers: Types.Array<Types.ObjectId>;
+  pending: boolean;
+  accepted: boolean;
 }
 
 const QuestionSchema = new Schema(
@@ -23,6 +25,8 @@ const QuestionSchema = new Schema(
     noOfLikes: { type: Number, default: 0 },
     likedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     answers: [{ type: Schema.Types.ObjectId, ref: "Answer" }],
+    pending: { type: Boolean, default: true },
+    accepted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -7,8 +7,7 @@ export interface AnswerDocument extends Document {
   noOfLikes: number;
   body: string;
   pending: boolean;
-  selected: boolean;
-  rejected: boolean;
+  accepted: boolean;
 }
 
 const AnswerSchema = new Schema(
@@ -19,8 +18,7 @@ const AnswerSchema = new Schema(
     noOfLikes: { type: Number, default: 0 },
     body: { type: String, required: true },
     pending: { type: Boolean, default: true },
-    selected: { type: Boolean, default: false },
-    rejected: { type: Boolean, default: false },
+    accepted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
