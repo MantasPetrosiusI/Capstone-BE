@@ -37,17 +37,20 @@ questionRouter.post(
   }
 );
 questionRouter.get("/", async (req, res, next) => {
-  const { pending } = req.query;
-
   try {
-    let query = {};
-
-    if (pending === "true") {
+    if (Object.keys(req.query).length > 0) {
+      let query = {};
       query = { pending: true };
+      const questions = await QuestionModel.find(query)
+        .populate("user")
+        .populate("answers");
+      res.send(questions);
+    } else {
+      const questions = await QuestionModel.find()
+        .populate("user")
+        .populate("answers");
+      res.send(questions);
     }
-
-    const questions = await QuestionModel.find(query).populate("user");
-    res.send(questions);
   } catch (error) {
     next(error);
   }
@@ -125,17 +128,22 @@ questionRouter.post(
     const { status } = req.body;
 
     try {
-      const question = await QuestionModel.findByIdAndUpdate(
-        questionId,
-        { accepted: status, pending: false },
-        { new: true }
-      ).populate("user");
+      if (status === false) {
+        await QuestionModel.findByIdAndDelete(questionId);
+        return res.send({ message: "Question deleted" });
+      } else {
+        const question = await QuestionModel.findByIdAndUpdate(
+          questionId,
+          { accepted: status, pending: false },
+          { new: true }
+        ).populate("user");
 
-      if (!question) {
-        return res.status(404).send({ message: "Question not found" });
+        if (!question) {
+          return res.status(404).send({ message: "Question not found" });
+        }
+
+        res.send(question);
       }
-
-      res.send(question);
     } catch (error) {
       next(error);
     }

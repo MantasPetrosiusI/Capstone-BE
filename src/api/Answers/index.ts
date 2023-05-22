@@ -37,23 +37,27 @@ answersRouter.post(
   }
 );
 answersRouter.get("/", async (req, res, next) => {
-  const { pending } = req.query;
-
   try {
-    let query = {};
+    if (Object.keys(req.query).length > 0) {
+      let query = {};
 
-    if (pending === "true") {
       query = { pending: true };
-    }
 
-    const answers = await AnswerModel.find(query)
-      .populate("user")
-      .populate("question");
-    res.send(answers);
+      const answers = await AnswerModel.find({ query })
+        .populate("user")
+        .populate("question");
+      res.send(answers);
+    } else {
+      const answers = await AnswerModel.find()
+        .populate("user")
+        .populate("question");
+      res.send(answers);
+    }
   } catch (error) {
     next(error);
   }
 });
+
 answersRouter.get(
   "/questions/:questionId/:answerId",
   async (req, res, next) => {
@@ -77,18 +81,6 @@ answersRouter.get("/:questionId", async (req, res, next) => {
   try {
     const answers = await AnswerModel.find({
       question: req.params.questionId,
-    }).populate("user");
-    console.log("getAnswerById: ", answers);
-    res.send(answers);
-  } catch (error) {
-    next(error);
-  }
-});
-answersRouter.get("/me", async (req, res, next) => {
-  try {
-    const userId = (req as TokenRequest).user!._id;
-    const answers = await AnswerModel.find({
-      user: userId,
     }).populate("user");
     console.log("getAnswerById: ", answers);
     res.send(answers);
@@ -145,21 +137,13 @@ answersRouter.post(
     const { status } = req.body;
 
     try {
+      if (status === false) {
+        await AnswerModel.findByIdAndDelete(answerId);
+        return res.send({ message: "Answer deleted" });
+      }
       const answer = await AnswerModel.findByIdAndUpdate(
         answerId,
         { accepted: status, pending: false },
-        { new: true }
-      );
-
-      const questionId = answer!.question!;
-
-      if (!answer) {
-        return res.status(404).send({ message: "Answer not found" });
-      }
-
-      await QuestionModel.findByIdAndUpdate(
-        questionId,
-        { answered: true },
         { new: true }
       );
 
@@ -169,5 +153,15 @@ answersRouter.post(
     }
   }
 );
+answersRouter.get("/me", async (req, res, next) => {
+  try {
+    const userId = (req as TokenRequest).user!._id;
+    const answers = await AnswerModel.find({ user: userId }).populate("user");
+    console.log("getAnswerById: ", answers);
+    res.send(answers);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default answersRouter;

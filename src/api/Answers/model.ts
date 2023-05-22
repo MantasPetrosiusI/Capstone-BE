@@ -1,8 +1,8 @@
 import { Schema, model, Document, Types } from "mongoose";
 
 export interface AnswerDocument extends Document {
-  user: string;
-  question: string;
+  user: Types.ObjectId;
+  question: Types.ObjectId;
   likedBy: Types.ObjectId[];
   noOfLikes: number;
   body: string;
