@@ -84,6 +84,18 @@ answersRouter.get("/:questionId", async (req, res, next) => {
     next(error);
   }
 });
+answersRouter.get("/me", async (req, res, next) => {
+  try {
+    const userId = (req as TokenRequest).user!._id;
+    const answers = await AnswerModel.find({
+      user: userId,
+    }).populate("user");
+    console.log("getAnswerById: ", answers);
+    res.send(answers);
+  } catch (error) {
+    next(error);
+  }
+});
 
 answersRouter.get("/:userId/answers", async (req, res, next) => {
   try {
@@ -145,7 +157,7 @@ answersRouter.post(
         return res.status(404).send({ message: "Answer not found" });
       }
 
-      const question = await QuestionModel.findByIdAndUpdate(
+      await QuestionModel.findByIdAndUpdate(
         questionId,
         { answered: true },
         { new: true }
