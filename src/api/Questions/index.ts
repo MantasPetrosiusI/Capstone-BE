@@ -99,13 +99,13 @@ questionRouter.get("/search", async (req, res, next) => {
     let searchQuery: any = {};
 
     if (language) {
-      searchQuery.language = language;
+      searchQuery.language = { $regex: language, $options: "i" };
     } else if (tag) {
-      searchQuery.tags = tag;
+      searchQuery.tags = { $regex: tag, $options: "i" };
     } else if (title) {
       searchQuery.title = { $regex: title, $options: "i" };
     } else if (username) {
-      searchQuery.user = username;
+      searchQuery.user = { $regex: username, $options: "i" };
     }
     let searchResults = {};
     if (language || title || tag) {
