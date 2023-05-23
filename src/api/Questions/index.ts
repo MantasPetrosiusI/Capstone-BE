@@ -71,6 +71,8 @@ questionRouter.post(
   async (req, res, next) => {
     const questionId = req.params.questionId;
     const userId = (req as TokenRequest).user!._id;
+    const user = await UserModel.findById(userId);
+
     try {
       const questionObjectId = new Types.ObjectId(questionId);
       const question = await QuestionModel.findById(questionObjectId);
@@ -79,12 +81,15 @@ questionRouter.post(
           (likedUserId) => likedUserId.toString() !== userId.toString()
         );
         question!.noOfLikes -= 1;
+        user!.reputation -= 1;
+        await user!.save();
         await question!.save();
         return res.status(400).send({ questionId });
       }
       question!.likedBy.push(new Types.ObjectId(userId));
       question!.noOfLikes += 1;
-
+      user!.reputation += 1;
+      await user!.save();
       await question!.save();
       res.send({ questionId });
     } catch (error) {
