@@ -143,8 +143,10 @@ answersRouter.post(
         answerId,
         { accepted: status, pending: false },
         { new: true }
-      );
-
+      ).populate("user");
+      if (!answer) {
+        return res.status(404).send({ message: "Answer not found" });
+      }
       res.send(answer);
     } catch (error) {
       next(error);
