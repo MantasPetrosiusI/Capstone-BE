@@ -116,7 +116,6 @@ questionRouter.get("/search", async (req, res, next) => {
     if (language || title || tag) {
       searchResults = await QuestionModel.find(searchQuery);
     } else if (username) {
-      console.log(username);
       searchResults = await UserModel.find({ username: username });
     }
     res.send(searchResults);

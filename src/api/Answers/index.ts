@@ -62,7 +62,6 @@ answersRouter.get(
   "/questions/:questionId/:answerId",
   async (req, res, next) => {
     try {
-      console.log(req.params);
       const answer = await AnswerModel.findOne({
         question: req.params.questionId,
         _id: req.params.answerId,
@@ -82,7 +81,6 @@ answersRouter.get("/:questionId", async (req, res, next) => {
     const answers = await AnswerModel.find({
       question: req.params.questionId,
     }).populate("user");
-    console.log("getAnswerById: ", answers);
     res.send(answers);
   } catch (error) {
     next(error);
@@ -157,7 +155,6 @@ answersRouter.get("/me", async (req, res, next) => {
   try {
     const userId = (req as TokenRequest).user!._id;
     const answers = await AnswerModel.find({ user: userId }).populate("user");
-    console.log("getAnswerById: ", answers);
     res.send(answers);
   } catch (error) {
     next(error);
