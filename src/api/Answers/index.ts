@@ -128,19 +128,19 @@ answersRouter.post(
 );
 
 answersRouter.post(
-  "/:answerId/status",
+  "/:questionId/status",
   JWTAuthMiddleware,
   async (req, res, next) => {
-    const answerId: string = req.params.answerId;
+    const questionId: string = req.params.questionId;
     const { status } = req.body;
 
     try {
       if (status === false) {
-        await AnswerModel.findByIdAndDelete(answerId);
+        await AnswerModel.findByIdAndDelete({ question: questionId });
         return res.send({ message: "Answer deleted" });
       }
       const answer = await AnswerModel.findByIdAndUpdate(
-        answerId,
+        { question: questionId },
         { accepted: status, pending: false },
         { new: true }
       )
