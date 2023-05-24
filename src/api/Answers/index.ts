@@ -127,35 +127,31 @@ answersRouter.post(
   }
 );
 
-answersRouter.post(
-  "/:questionId/status",
-  JWTAuthMiddleware,
-  async (req, res, next) => {
-    const questionId: string = req.params.questionId;
-    const { status } = req.body;
+answersRouter.post("/:questionId/status", async (req, res, next) => {
+  const questionId = req.params.questionId;
+  const { status } = req.body;
 
-    try {
-      if (status === false) {
-        await AnswerModel.findByIdAndDelete({ question: questionId });
-        return res.send({ message: "Answer deleted" });
-      }
-      const answer = await AnswerModel.findByIdAndUpdate(
-        { question: questionId },
+  try {
+    if (status === false) {
+      await AnswerModel.findByIdAndDelete(questionId);
+      return res.send({ message: "Question deleted" });
+    } else {
+      const question = await AnswerModel.findByIdAndUpdate(
+        questionId,
         { accepted: status, pending: false },
         { new: true }
-      )
-        .populate("user")
-        .populate("question");
-      console.log(answer);
-      if (!answer) {
-        return res.status(404).send({ message: "Answer not found" });
+      ).populate("user");
+
+      if (!question) {
+        return res.status(404).send({ message: "Question not found" });
       }
-      res.send(answer);
-    } catch (error) {
-      next(error);
+
+      res.send(question);
     }
+  } catch (error) {
+    next(error);
   }
-);
+});
 answersRouter.get("/me", async (req, res, next) => {
   try {
     const userId = (req as TokenRequest).user!._id;
